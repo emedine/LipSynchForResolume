@@ -1,7 +1,20 @@
+/*
+* Example style!
+* You can do whatever the hell you want on your site :-)
+*/
 
 body {
   font-family:Arial,"Liberation Sans",sans-serif;
-  background-color:#000000;
+  background:#000000;
+}
+#sketchholder {
+  border: 1px solid #ffffff;
+  /* background-color:#000000; */ 
+  background-image: url("../data/background_mh_1.gif");
+  background-repeat: no-repeat, repeat;
+  background-size: cover; 
+  width:1024px;
+
 }
 
 h2 {
@@ -9,58 +22,17 @@ h2 {
 }
 
 p, a {
-  font-size:9pt;
+  font-size:14pt;
   margin:10px 0 0 0;
-  color:#3d3d3d;
 }
 
 a, a:visited {
   color:#427fed;
 }
 
-a:hover {
-  color:#82afff;
+a:hover nav{
+  color:#cccccc;
 }
-
-
-/* layout elements */
-
-#sketch{
-  
-  background-image:url("../images/background_mh_contrast2.gif");
-  background-size:cover;
-}
-#content-main{
-
-  width:400px;
-  height:400px;
-  margin: 0 auto;
- 
-}
-#content-buffer{
-  /* display:hidden; */
-  width:400px;
-  height:400px;
-  margin: 0 auto;
-   display:hidden;
- 
-}
-
-
-canvas {
-
-
-  image-rendering: optimizeSpeed;             /* Older versions of FF          */
-  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
-  image-rendering: -webkit-optimize-contrast; /* Safari                        */
-  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
-  image-rendering: pixelated;                 /* Awesome future-browsers       */
-  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-
-}
-
-
-/*
 
 ul li {
   list-style:none;
@@ -74,80 +46,39 @@ ul li:hover {
   background-color:#f0f3fb;
 }
 
-.user, .tweet, .timePosted {
+
+#navholder{
+  padding-top:20px;
+  margin:0 auto;
+  width:500px;
+}
+#coll{
   float:left;
-}
 
-.user {
-  width:25%;
 }
+#colr{
+  float:right;
+  padding-top:10px;
 
-.tweet {
-  width:50%;
 }
-
-.timePosted {
-  width:15%;
-}
-
-.user {
-  clear:left;
-}
-
-.user a {
- width: 100px;
-}
-
-.user span span {
-  width:100px;
-  display:block;
-  margin-top:10px;
-}
-
-.user img, .user a > span {
-  float:left;
-}
-
-.interact {
-  float:left;
-  width:10%;
-  margin-top:-7px;
-}
-
-.interact a {
-  margin-left:5px;
-  float:left;
-}
-
-.user a > span {
-  margin-left:10px;
-}
-
-.media img {
-  max-width:250px;
-  max-height:250px;
-}
-
-#linkage {
-  position:fixed;
-  top:0px;
-  right:0px;
-  background-color:#3d3d3d;
-  color:#ffffff;
+#texttospeech{
+  color:#000000;
+  font-weight: strong;
+  font-size:20px;
+  border:1px solid #000000;
+  background-color:#ffffff;
+  padding:10px;
   text-decoration:none;
-  padding:5px;
-  width:10%;
-  font-family:arial;
-}
-
-.tco-hidden{
-  display: none;
-}
-*/
-#example4{
-  display:none;
+  width:350px;
+  height:20px;
 }
 #nav{
+  color:#ffffff;
+  font-weight: strong;
+  border:1px solid #ffffff;
+  background-color:#000000;
+  padding:10px;
+  height:20px;
+  text-decoration:none;
 
-  display:none;
 }

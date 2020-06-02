@@ -1,0 +1,24 @@
+/*{
+	"CREDIT": "SpoutControls - spout.zeal.co",
+	"DESCRIPTION": "LipSynch",
+	"CATEGORIES": [
+	"Parameter adjustment"
+	],
+	"INPUTS": [
+		
+ 		{
+			"NAME": "TEXT",
+			"TYPE": "text",
+			"TEXT": ""
+		},
+		{
+			"NAME": "LOOP",
+			"TYPE": "bool",
+			"MIN": 0.00,
+			"MAX": 1.00,
+			"DEFAULT": 1.00
+		},
+		
+		
+	],
+}*/

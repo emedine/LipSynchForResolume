@@ -1,18 +1,15 @@
-/* processing code for ShitDonaldTrumpSays */
-
 /// interface with browser
-/*
 interface JavaScript {
-  void reDoSearch();
-  void saveCurFrame(int fncount, String tweet);
-  void saveGifFromFrames(String tweet);
+  /// void reDoSearch();
 }
 void bindJavascript(JavaScript js) {
   javascript = js;
 }
 JavaScript javascript;
-*/
-PFont impactFont;
+
+
+/* @pjs font="data/impact.ttf"; */
+PFont impactFont = createFont("impact",65);
 
 PImage curMouth;
 PImage curFace;
@@ -57,8 +54,8 @@ ArrayList <PImage> ImgFaceArray = new ArrayList(); /// array to hold all face im
 ArrayList <String> charArray = new ArrayList(); /// hold all the chars we cycle through
 ArrayList <String> sylbArray = new ArrayList(); /// hold all the chars in a syllable
 ArrayList <String> textArray = new ArrayList(); /// this holds the phrases taken from tweets
-ArrayList <String> tweetArray = new ArrayList();
-ArrayList <String> nameArray = new ArrayList();
+ArrayList <String> tweetArray = new ArrayList(); // holds all the tweets returned from the search
+ArrayList <String> nameArray = new ArrayList(); 
 
 /// positioning and data
 float mouthPosX = 200;
@@ -71,7 +68,7 @@ int textBoxPosX = -10;
 int textBoxPosY = -10;
 
 float maskX = textBoxPosX;
-float textBoxWidth = 380;
+float textBoxWidth = 1024;
 float textBoxHeight = 300;
 
 int lastRecordedTime = 0;
@@ -84,24 +81,38 @@ boolean resetTick = false;
 
 int charSpeed = 6;
 int sylbSpeed = 6;
+float readingSpeed = 1;
 
-int resetSpeed = 5000; /// 1000; // nice interval 
+int resetSpeed = 500; /// 1000; // 5 seconds between reading text
 
 boolean isFirst = false;
+
+int tCounter = 0;
+/// interface elements
+boolean isLooping = true;
+String UserText = "";
+
+
 
 //// timer info
 int interval = 2800000;// 1000 is one seconds, so 900000 redoes search every half hour
 
 void setup() {
-  size(400,300);
+  size(1024,650);
+  
   // size(window.innerWidth, window.innerHeight);
   /// size(800, 600);
-  impactFont = createFont("impact", 30); // loadFont("Impact-all.vlw");
+  
+  
+  
+  //////////////
+  // impactFont = loadFont("Impact-all.vlw"); // createFont("data/impact.ttf", 30); //createFont("impact", 30); // 
   textFont(impactFont);
   textAlign(CENTER);
-  textLeading(28);
-
-  textArray.add("this is default text"); /// set default 
+  textLeading(28); 
+  textSize(65);
+  UserText = "default ** text is default **";
+  textArray.add(UserText); /// set default 
   CharTimer = new Timer(charSpeed);
   CharTimer.start();
   
@@ -126,20 +137,6 @@ void setup() {
   mouthPathArray[12] = "data/clay_mouth_oo.png";
   mouthPathArray[13] = "data/clay_mouth_none.png"; //stop this looks nice for the poses
 
-/*
-  mouthPathArray[0] = "data/mouth_stop.png"; //stop b  p m
-  mouthPathArray[1] = "data/mouth_a.png"; // a i u
-  mouthPathArray[2] = "data/mouth_d.png"; //d
-  mouthPathArray[3] = "data/mouth_e.png"; // e y h
-  mouthPathArray[4] = "data/mouth_f.png"; //f v
-  mouthPathArray[5] = "data/mouth_l.png"; //l th
-  mouthPathArray[6] = "data/mouth_m.png"; // m
-  mouthPathArray[7] = "data/mouth_n.png"; // n
-  mouthPathArray[8] = "data/mouth_o.png"; // o w
-  mouthPathArray[9] = "data/mouth_r.png"; //  r
-  mouthPathArray[10] = "data/mouth_s.png"; //  s c z
-  mouthPathArray[11] = "data/mouth_t.png"; //  t
-  */
   for (int i=0; i < mouthPathArray.length; i++) {
     String mp = mouthPathArray[i];
     curMouth = loadImage(mp);
@@ -168,31 +165,35 @@ void setup() {
   
   //// add default first tweet
   tweetArray.add("TrumpBot Online");
-  textArray.add("TrumpBot Online");
   nameArray.add("TrumpBot checking ROM");
+  textArray.add("TrumpBot Online");
 }
 
 void draw() {
   noStroke();
   background(0,0,0,0);
 
+    
+
    //did the interval' time pass?
+   /*
   if(millis()-lastRecordedTime>interval){
     // display slide
    //and record time for next tick
    lastRecordedTime = millis();
    redoSearch();
   } 
+  */
 
   // draw face 
-  curFace.resize(0,300);
+  curFace.resize(0,600);
   facePosX = width/2-curFace.width/2;
   facePosY = height - curFace.height;
   image(curFace,facePosX,facePosY);
   // draw mouth
-  curMouth.resize(0,30);
-  mouthPosX = width/2 + curMouth.width/2 - 15;
-  mouthPosY = height/2 + curMouth.height/2 - 2;
+  curMouth.resize(0,70);
+  mouthPosX = width/2 + curMouth.width/2 - 40;
+  mouthPosY = height/2 + curMouth.height/2 + 10;
   image(curMouth, mouthPosX, mouthPosY );
   
   /// check for resets and pauses
@@ -201,18 +202,36 @@ void draw() {
   if(isFirst == true){
     resetTick = ResetTimer.update();
     if(resetTick){
-      println("RESET TIMER STOPPED");
-      
-      ResetTimer.stop();
-      isPaused = false;
-      CharTimer.start();
-
+      // println("RESET TIMER STOPPED");
+      String tString = textArray.get(0);
+      initTypewriter(tString);
+      startSpeaking();
     }
   }
 
   //*/
   /// draw text
   drawText();
+
+}
+
+void doNewText(String tString){
+    
+  // println("RECEIVED TEXT FROM JAVASCRIPT " + tString);
+  /// switch to lower case for text matching
+    UserText = tString.toLowerCase();
+    textArray.set(0, UserText); //  = UserText;
+    /// startSpeaking();
+    addText(UserText);
+    
+}
+
+void startSpeaking(){
+  // println("Start speaking");
+  ResetTimer.stop();
+  isPaused = false;
+  CharTimer.start();
+  
 }
 
 //// TYPEWRITING TEXT ANIMATIONS //////////////////////////
@@ -221,7 +240,7 @@ void drawText() {
   /// If we havent initialized the typewriter, then do it
   if (!loadedTypewriter) {
     String tString = textArray.get(0);
-    println("initializing typewriter: " + tString.toString() + " get 0 " + textArray.get(0) + " full arrray " + textArray.toString());
+    // println("initializing typewriter: " + tString.toString() + " get 0 " + textArray.get(0) + " full arrray " + textArray.toString());
     initTypewriter(tString);
   }
 
@@ -230,58 +249,29 @@ void drawText() {
   boolean charTick = CharTimer.update();
   /// speak char if we're updating chars
   if (charTick) {
-    println("TICK");
+    // // println("TICK");
     // check to see if we have said the whole phrase
-    // if so, pause and get the next tweet
+    // if so, pause and hold the text
     if (letCount >= charArray.size()) {
-      
+      // println("Phrase is finished");
       /// pause char timer
       CharTimer.stop();
-      /// save gif
-      String curTweet = "";
-      // check to make sure we have tweets
-      ///*
-      try{
-        /// if we do this it's sending all the **
-        String twt = nameArray.get(tweetCount) + " " +  spokenText.substring(0,140);
-        /// test to make sure we're not doing the tweet stub
-        // curTweet = tweetArray.get(tweetCount).substring(0,130);
-        if(curTweet != "tweet stub" || curTweet != "user stub"){
-          twt = twt.substring(0,140);
-           /// doGifExport(twt);
-        }
 
-        /// start reset timer
-        isPaused = true;
-        ResetTimer.start();
-        println("ALL STOPPED");
-        println("RESET TIMER STARTED");
-      } catch(Exception e){
-        println("error parsing tweet: " + e);
-      }
-      //*/
-      
-      tweetCount ++;
-      
-      // if we've read all the tweets then start over from the first tweet in the array
-      if (tweetCount >= tweetArray.size()) {
-        letCount = 0;
-        tweetCount = 0;
-        String tString = "default tweet";
-        try{
-          tString = tweetArray.get(tweetCount);
-        } catch (Exception e){
-          println("error finding tweet");
-        }
-        initTypewriter(tString);
-        // addText(spokenText);
-      } else {
-        letCount = 0;
-        String tString = tweetArray.get(tweetCount);
-        initTypewriter(tString);
-        
-      }
+      if(isLooping){
+           try{
+            
+            /// start reset timer
+            isPaused = true;
+            ResetTimer.start();
+            // println("RESET TIMER STARTED");
+          } catch(Exception e){
+            // println("error parsing tweet: " + e);
+          }
+          
+          // do a funny hold position
+          sayLetter("#");
 
+      }
       /// otherwise go to the next letter and read it
     } else {
       
@@ -298,9 +288,10 @@ void drawText() {
       */
       /// doFrameExport();
       curChar = charArray.get(letCount);
-      /// kill the pose char
-      if(curChar == "*"){
-        spokenText = spokenText + " ";
+      /// println("Cur Char: " + curChar);
+      /// don't show the pose char
+      if(curChar.equals("*")){
+        spokenText = spokenText + "";
       } else {
         spokenText = spokenText + curChar;
       }
@@ -342,6 +333,7 @@ void drawText() {
   if(!hasBreak){
 
     fill(0,0,0);
+    textFont(impactFont, 100); 
     int newX = textBoxPosX-1;
     for(newX = -1; newX < 2; newX++){
   
@@ -384,73 +376,7 @@ void drawText() {
   // text(upTxt, textBoxPosX, textBoxPosY, textBoxWidth, textBoxHeight);
 }
 
-////////////////////////////////////////
-/////// export frames and gif /////////////////////
-////////////////////////////////////////
 
-/*
-void doFrameExport(){
-  if (javascript!=null) {
-    /// display the actual text text
-    upTxt = spokenText.toUpperCase();
-  // split the text up to header + footer
-  // on the soonest space after 50 chars
-  // and set the breakpoint
-  if(upTxt.length() > 50 && curChar == " " && hasBreak == false ){
-    breakPoint = upTxt.length();
-    hasBreak = true;
-  }
-  if(!hasBreak){
-
-    fill(0,0,0);
-    int newX = textBoxPosX-1;
-    for(newX = -1; newX < 2; newX++){
-  
-        text(upTxt, 20+newX,20, textBoxWidth, textBoxHeight);
-        text(upTxt, 20,20+newX, textBoxWidth, textBoxHeight);
-    }
-    fill(255);
-    text(upTxt, 20,20, textBoxWidth, textBoxHeight);
-    
-    
-  } else {
-    // do top box
-    String tpTxt = upTxt.substring(0,breakPoint);
-    
-    fill(0,0,0);
-    int newX = textBoxPosX-1;
-    for(newX = -1; newX < 2; newX++){
-  
-        text(tpTxt, 20+newX,20, textBoxWidth, textBoxHeight);
-        text(tpTxt, 20,20+newX, textBoxWidth, textBoxHeight);
-    }
-    fill(255);
-    text(tpTxt, 20,20, textBoxWidth, textBoxHeight);
-    
-    // do bot box
-    String btTxt = upTxt.substring(breakPoint);
-    fill(0,0,0);
-    int newBX = textBoxPosX-1;
-    for(newBX = -1; newBX < 2; newBX++){
-  
-        text(btTxt, 20+newBX,220, textBoxWidth, textBoxHeight);
-        text(btTxt, 20,220+newBX, textBoxWidth, textBoxHeight);
-    }
-    fill(255);
-    text(btTxt, 20,220, textBoxWidth, textBoxHeight);
-    
-  }
-    javascript.saveCurFrame(letCount, upTxt);
-  }
-}
-void doGifExport(String tweetcaption){
-  
-  if (javascript!=null) {
-    javascript.saveGifFromFrames(tweetcaption);
-  } 
-}
- 
-*/
 
 ///////////////////////////////////////
 ////// DO MOUTH POSITIONS //////////////
@@ -553,7 +479,7 @@ void doMouthPosition(String tChar, String sylb) {
     } 
     catch(Exception e) {
       //// mouthPlayer.gotoAndStop("stop")
-      println("letter doesn't exist in mouth:" + curChar + ":::" + e);
+      // println("letter doesn't exist in mouth:" + curChar + ":::" + e);
     }
 
     break;
@@ -566,7 +492,7 @@ void prepSyllable(String tSylb) {
   // load syllable array with the sylb
   hasSylb = true;
   // get a random pose
-  poseStyle = (int)random(facePathArray.length-1);
+  poseStyle = (int)random(1, facePathArray.length-1);
   sylbCount = 0;
   sylbArray = new ArrayList(); 
   // add the phonemes we want to the syllable array
@@ -763,7 +689,7 @@ void addText(String txt) {
 
   } 
   catch(Exception e) {
-    println("error adding text");
+    // println("error adding text");
   }
   initTypewriter(textArray.get(0) + "**");
   CharTimer.start();
@@ -790,31 +716,13 @@ void initTypewriter(String txt) {
       charArray.add(str(txt.charAt(i)));
     }
   } catch (Exception e){
-    println("exception parsing tweet: " + e);
+    // println("exception parsing tweet: " + e);
   }
   
 }
 
 
-//////// add tweets to array //////////////
 
-void addTweet(String tweet, String user) {
-  // text(tweet, 200,200);
-  try {
-    
-    /// check current tweet array for tweet
-    
-    /// if it's not there, add it and send to twitter bot
-    String nu = trim(user);
-    /// maybe purge if we're over a certain limit?
-    tweetArray.add(tweet + "********");
-    nameArray.add("" + nu);
-
-  } 
-  catch(Exception e) {
-    println("error adding tweet");
-  }
-}
 
 ////////////////////////////////
 
@@ -825,7 +733,7 @@ void mouseClicked() {
   redoSearch();
 }
 void redoSearch() {
-  println("Clicked");
+  // println("Clicked");
   tweetArray = new ArrayList();
   nameArray = new ArrayList();
   /*

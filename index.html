@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+    <meta name="author" content="Eric Medine" />
+    <title>Trump Lip Synch</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/jquery.1.6.1.min.js"></script>
+    <script type="text/javascript" src="js/processing.v1.4.8.js"></script>
+    <script type="text/javascript">
+
+///// COMMUNICATE WITH PROCESSING
+var procElem;
+ 
+
+function startSketch() {
+   switchSketchState(true);
+}
+
+function stopSketch() {
+   switchSketchState(false);
+}
+
+function switchSketchState(on) {
+   if (!procElem) {
+       procElem = Processing.getInstanceById('sketch');
+       console.log("THERE IS PROCESSING")
+   }
+
+   
+}
+function sendTextToSketch(){
+  try{
+
+     var tString = document.getElementById("texttospeech").value; /// t.replace(/<(?:.|\n)*?>/gm, '');
+     console.log("SENDING THIS TEXT: " + tString);
+     /// var dString = d.replace(/<(?:.|\n)*?>/gm, '');
+      console.log("send: " + tString);
+      procElem = Processing.getInstanceById('sketch');
+      procElem.doNewText(tString);
+      if (!procElem) {
+         
+         console.log("error finding processing element");
+       }
+
+  } catch(e){
+
+    console.log("error sending text " + e);
+  }
+ 
+
+}
+
+/////////// LISTEN TO PROCESSING /////////////////////////////
+function reDoSearch(){
+
+  console.log("I hear you");
+}
+
+var bound = false;
+
+function bindJavascript() {
+  var pjs = Processing.getInstanceById('sketch');
+  if(pjs!=null) {
+      pjs.bindJavascript(this);
+   bound = true;
+  }
+  if(!bound) setTimeout(bindJavascript, 250);
+}
+
+   bindJavascript();
+</script>
+</head>
+<body>
+
+<div id="content-main" align="center">
+    <div id="sketchholder">
+      <canvas id="sketch" data-processing-sources="main/main.pde"></canvas>
+    </div>
+
+    <div id="navholder">
+        <div id="coll">
+          <input type="text" id="texttospeech" label="texttospeech">
+        </div>
+        <div id="colr">
+          <a href="#" id="nav" onclick="sendTextToSketch()">Send Text</a>
+        </div>
+
+    </div>
+</div>
+
+  </body>
+</html>
